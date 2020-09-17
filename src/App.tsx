@@ -1,16 +1,17 @@
 import React, {useState} from 'react';
 import './App.css';
 import Todolist from "./Todolist";
+import {v1} from "uuid";
 
 
 function App() {
 
 
     let [tasks, setTasks] = useState([
-        {id: 1, title: 'Html&Css', isDone: true},
-        {id: 2, title: 'JS', isDone: true},
-        {id: 3, title: 'React', isDone: false},
-        {id: 4, title: 'RestApi', isDone: true},
+        {id: v1(), title: 'Html&Css', isDone: true},
+        {id: v1(), title: 'JS', isDone: true},
+        {id: v1(), title: 'React', isDone: false},
+        {id: v1(), title: 'RestApi', isDone: true},
 
     ]);
 
@@ -24,7 +25,7 @@ function App() {
     }
 
 
-    function RemoveTask(id: number) {
+    function RemoveTask(id: string) {
         let filteredTasks = tasks.filter(tl => tl.id != id)
         setTasks(filteredTasks)
     }
@@ -34,11 +35,19 @@ function App() {
     }
 
 
+    function addTask(title: string) {
+        let task = {id: v1(), title: title, isDone: false};
+        let newTasks = [task, ...tasks];
+        setTasks(newTasks);
+    }
+
+
     return (
         <div className="App">
             <Todolist title='What to learn' tasks={tasksForTodolist}
                       RemoveTask={RemoveTask}
                       changeFilter={changeFilter}
+                      addTask={addTask}
             />
 
 
