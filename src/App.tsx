@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import Todolist from "./Todolist";
 import {v1} from "uuid";
+import AddItemForm from "./AddItemForm";
 
 
 export type FilterValuesType = 'all' | 'active' | 'completed';
@@ -24,9 +25,6 @@ function App() {
         {id: todolistId1, title: 'What to learn', filter: 'all'},
         {id: todolistId2, title: 'What to buy', filter: 'all'}
     ])
-
-
-
 
 
     let [tasks, setTasks] = useState({
@@ -79,6 +77,15 @@ function App() {
         setTasks({...tasks});
     }
 
+    function ChangeTaskTitle(taskId: string, newTitle: string, todolistId: string) {
+        let todolistTasks = tasks[todolistId];
+        let task = todolistTasks.find(tl => tl.id === taskId);
+        if (task) {
+            task.title = newTitle;
+        }
+        setTasks({...tasks});
+    }
+
 
     function removeTodolist(id: string) {
         setTodolists(todolists.filter(tl => tl.id != id));
@@ -87,8 +94,31 @@ function App() {
     }
 
 
+    function addTodolist(title: string) {
+        let newTodolistId = v1();
+        let newTodolist: TodolistType = {id: newTodolistId, title: title, filter: 'all'};
+        setTodolists([newTodolist, ...todolists]);
+        setTasks({
+            ...tasks,
+            [newTodolistId]: []
+        })
+
+    }
+
+    function changeTodolistTitle (id:string , newTitle: string) {
+        const todolist = todolists.find(tl => tl.id === id)
+        if(todolist) {
+            todolist.title = newTitle ;
+            setTodolists([...todolists])
+        }
+    }
+
+
+
+
     return (
         <div className="App">
+            <AddItemForm addItem={addTodolist}/>
             {
                 todolists.map(tl => {
 
@@ -104,6 +134,8 @@ function App() {
 
 
                     return <Todolist
+                        changeTodolistTitle={changeTodolistTitle}
+                        ChangeTaskTitle={ChangeTaskTitle}
                         key={tl.id}
                         id={tl.id}
                         title={tl.title}
@@ -116,7 +148,7 @@ function App() {
                         removeTodolist={removeTodolist}
                     />
                 })
-            } 
+            }
 
 
         </div>
